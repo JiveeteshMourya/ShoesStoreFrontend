@@ -1,121 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useCallback, useEffect } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+
+import Navbar from "./components/Navbar/Navbar";
+import HomePage from "./pages/HomePage";
+import Footer from "./components/Footer/Footer";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const goToSection = useCallback((id, behavior = "smooth") => {
+    const element = document.getElementById(id);
+    if (!element) return false;
+
+    const navbarHeight = window.innerWidth <= 768 ? 110 : 0.15 * window.innerHeight;
+
+    window.scrollTo({
+      top: element.offsetTop - navbarHeight,
+      behavior,
+    });
+
+    return true;
+  }, []);
+
+  const navigateToSection = useCallback(
+    id => {
+      navigate(`/#${id}`);
+
+      if (location.pathname === "/") {
+        goToSection(id);
+      }
+    },
+    [goToSection, location.pathname, navigate]
+  );
+
+  useEffect(() => {
+    if (location.pathname !== "/" || !location.hash) return;
+
+    const sectionId = location.hash.slice(1);
+    let attempts = 0;
+    const maxAttempts = 20;
+
+    const intervalId = setInterval(() => {
+      attempts += 1;
+      const didScroll = goToSection(sectionId);
+      if (didScroll || attempts >= maxAttempts) {
+        clearInterval(intervalId);
+      }
+    }, 120);
+
+    return () => clearInterval(intervalId);
+  }, [goToSection, location.hash, location.pathname]);
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <Navbar navigateToSection={navigateToSection} />
+      <Routes>
+        <Route path="/" element={<HomePage navigateToSection={navigateToSection} />} />
+      </Routes>
+      <Footer navigateToSection={navigateToSection} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

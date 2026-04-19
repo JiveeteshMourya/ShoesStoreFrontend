@@ -1,0 +1,14 @@
+*.env
+.env
+.env.*
+
+/node_modules
+/.github
+
+./dist
+
+.gitignore
+.git
+deploy.yml
+
+/public
