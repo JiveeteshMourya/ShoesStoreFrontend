@@ -131,7 +131,7 @@ export default function ProductDetailPage() {
           {selectedSize && (
             <div className="flex items-center gap-3">
               <p className="text-sm text-(--color-secondary)">Qty</p>
-              <div className="flex items-center gap-2 rounded-(--radius-sm) border border-(--color-border) px-3 py-1.5">
+              <div className="flex items-center gap-2 rounded-sm border border-(--color-border) px-3 py-1.5">
                 <button
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
                   className="text-(--color-secondary) hover:text-(--color-primary) transition-colors"
@@ -189,7 +189,7 @@ export default function ProductDetailPage() {
         title="Confirm your order"
       >
         <div className="flex flex-col gap-4">
-          <div className="flex gap-4 rounded-(--radius-sm) bg-(--color-surface) p-4">
+          <div className="flex gap-4 rounded-sm bg-(--color-surface) p-4">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-(--color-primary)">{product.name}</p>
               <p className="text-xs text-(--color-secondary)">{product.brand}</p>

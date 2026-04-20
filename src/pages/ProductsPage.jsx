@@ -84,7 +84,7 @@ export default function ProductsPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search products…"
-              className="rounded-(--radius-sm) border border-(--color-border) bg-(--color-background) pl-9 pr-4 py-2 text-sm outline-none focus:border-(--color-primary) w-56"
+              className="rounded-sm border border-(--color-border) bg-(--color-background) pl-9 pr-4 py-2 text-sm outline-none focus:border-(--color-primary) w-56"
             />
           </div>
         </form>

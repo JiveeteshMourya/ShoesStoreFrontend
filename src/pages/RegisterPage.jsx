@@ -52,19 +52,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--color-background)] px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-(--color-background) px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-[var(--color-primary)]">Create account</h1>
-          <p className="mt-1 text-sm text-[var(--color-secondary)]">Join Sole & Co. today</p>
+          <h1 className="text-2xl font-semibold text-(--color-primary)">Create account</h1>
+          <p className="mt-1 text-sm text-(--color-secondary)">Join Sole & Co. today</p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white p-8"
+          className="flex flex-col gap-4 rounded-md) border border-(--color-border) bg-white p-8"
         >
           {error && (
-            <p className="rounded-[var(--radius-sm)] bg-red-50 px-4 py-2.5 text-sm text-[var(--color-error)]">
+            <p className="rounded-sm) bg-red-50 px-4 py-2.5 text-sm text-(--color-error)">
               {error}
             </p>
           )}
@@ -115,9 +115,9 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-[var(--color-secondary)]">
+        <p className="mt-4 text-center text-sm text-(--color-secondary)">
           Already have an account?{" "}
-          <Link to="/login" className="font-medium text-[var(--color-primary)] underline">
+          <Link to="/login" className="font-medium text-(--color-primary) underline">
             Sign in
           </Link>
         </p>

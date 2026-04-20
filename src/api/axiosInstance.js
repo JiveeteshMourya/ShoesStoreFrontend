@@ -45,7 +45,6 @@ export function setupInterceptors(store) {
       } catch (refreshErr) {
         processQueue(refreshErr);
         store.dispatch(resetAuth());
-        window.location.href = "/login";
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
