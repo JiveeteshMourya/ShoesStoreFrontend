@@ -7,22 +7,49 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = error => {
+  failedQueue.forEach(({ resolve, reject }) => (error ? reject(error) : resolve()));
+  failedQueue = [];
+};
+
 export function setupInterceptors(store) {
   axiosInstance.interceptors.response.use(
     res => res,
     async err => {
       const original = err.config;
-      if (err.response?.status === 401 && !original._retry) {
-        original._retry = true;
-        try {
-          await axiosInstance.post("/auth/refresh-token");
-          return axiosInstance(original);
-        } catch {
-          store.dispatch(resetAuth());
-          window.location.href = "/login";
-        }
+      const is401 = err.response?.status === 401;
+      const isRefreshUrl = original.url?.includes("refresh-token");
+
+      if (!is401 || original._retry || isRefreshUrl) {
+        return Promise.reject(err);
       }
-      return Promise.reject(err);
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => axiosInstance(original))
+          .catch(e => Promise.reject(e));
+      }
+
+      original._retry = true;
+      isRefreshing = true;
+
+      try {
+        await axiosInstance.post("/auth/refresh-token");
+        processQueue(null);
+        return axiosInstance(original);
+      } catch (refreshErr) {
+        processQueue(refreshErr);
+        store.dispatch(resetAuth());
+        window.location.href = "/login";
+        return Promise.reject(refreshErr);
+      } finally {
+        isRefreshing = false;
+      }
     }
   );
 }

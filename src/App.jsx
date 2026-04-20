@@ -26,6 +26,7 @@ import SellerProductsPage from "./pages/seller/SellerProductsPage";
 import ProductFormPage from "./pages/seller/ProductFormPage";
 import SellerOrdersPage from "./pages/seller/SellerOrdersPage";
 import SellerOrderDetailPage from "./pages/seller/SellerOrderDetailPage";
+import ChatWidget from "./components/chatbot/ChatWidget";
 
 function App() {
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <ChatWidget />
     </>
   );
 }

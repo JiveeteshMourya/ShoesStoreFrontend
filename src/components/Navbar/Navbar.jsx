@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   LuUser,
@@ -45,6 +46,17 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
+    const sessionId = sessionStorage.getItem("chatbot_session_id");
+    if (sessionId) {
+      await axios
+        .post(
+          "http://localhost:6969/api/v1/chatbot/clear-session",
+          { sessionId },
+          { withCredentials: true }
+        )
+        .catch(() => {});
+      sessionStorage.removeItem("chatbot_session_id");
+    }
     await dispatch(logoutThunk());
     toast.success("Signed out successfully");
     navigate("/");
