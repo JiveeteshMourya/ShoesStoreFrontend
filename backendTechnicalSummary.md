@@ -1063,3 +1063,140 @@ async function refreshTokens() {
   return accessToken;
 }
 ```
+
+---
+
+## Model Validations
+
+Validation errors are returned as `400` responses. The following rules are enforced at the database layer (Mongoose) in addition to any route-level Joi validation.
+
+---
+
+### User
+
+| Field             | Rules                                                                 |
+| ----------------- | --------------------------------------------------------------------- |
+| `firstName`       | Required. String. Min 2 chars, max 50 chars. Trimmed.                 |
+| `lastName`        | Required. String. Min 2 chars, max 50 chars. Trimmed.                 |
+| `email`           | Required. String. Must be unique. Stored lowercase. Trimmed.          |
+| `password`        | Required. String. Never returned in responses (`select: false`).      |
+| `role`            | Optional. Enum: `"admin"`, `"buyer"`, `"seller"`. Default: `"buyer"`. |
+| `phone`           | Optional. String. Max 20 chars. Trimmed.                              |
+| `address.street`  | Optional. String. Trimmed.                                            |
+| `address.city`    | Optional. String. Trimmed.                                            |
+| `address.state`   | Optional. String. Trimmed.                                            |
+| `address.zipCode` | Optional. String. Trimmed.                                            |
+| `address.country` | Optional. String. Trimmed.                                            |
+| `avatar`          | Optional. ObjectId → `Image`.                                         |
+| `refreshToken`    | Never returned in responses (`select: false`).                        |
+| `isUserVerified`  | Boolean. Default: `true`.                                             |
+| `isBlocked`       | Boolean. Default: `false`.                                            |
+
+**Virtual:** `fullName` = `firstName + " " + lastName` (read-only, not stored).
+
+---
+
+### Category
+
+| Field         | Rules                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------- |
+| `name`        | Required. String. Must be unique. Min 2 chars, max 100 chars. Trimmed.                                   |
+| `slug`        | Auto-generated from `name` on create and whenever `name` changes. Lowercase. Unique. Never set manually. |
+| `description` | Optional. String. Max 500 chars. Trimmed.                                                                |
+| `image`       | Optional. ObjectId → `Image`.                                                                            |
+
+---
+
+### Product
+
+#### Main fields
+
+| Field           | Rules                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`          | Required. String. Min 2 chars, max 200 chars. Trimmed.                                                                               |
+| `slug`          | Auto-generated from `name`. Unique. If a product with the same slug exists, a 6-character ID suffix is appended. Never set manually. |
+| `description`   | Required. String. Min 10 chars, max 2000 chars. Trimmed.                                                                             |
+| `brand`         | Required. String. Max 100 chars. Trimmed.                                                                                            |
+| `category`      | Required. ObjectId → `Category`.                                                                                                     |
+| `seller`        | Required. ObjectId → `User`.                                                                                                         |
+| `basePrice`     | Required. Number. Min 0.                                                                                                             |
+| `images`        | Optional. Array of ObjectId → `Image`.                                                                                               |
+| `sizeVariants`  | Required. Array of size variant objects. **At least one entry required.**                                                            |
+| `tags`          | Optional. Array of strings. Max 10 tags.                                                                                             |
+| `isActive`      | Boolean. Default: `true`.                                                                                                            |
+| `averageRating` | Number. Min 0, max 5. Default: `0`. Recalculated on every review create/edit/delete.                                                 |
+| `reviewCount`   | Number. Min 0. Default: `0`. Recalculated on every review create/edit/delete.                                                        |
+
+#### `sizeVariants` item
+
+| Field   | Rules                                                                    |
+| ------- | ------------------------------------------------------------------------ |
+| `size`  | Required. Number.                                                        |
+| `stock` | Required. Number. Min 0. Default: `0`.                                   |
+| `price` | Optional. Number. Min 0. Overrides `basePrice` for this size if present. |
+
+---
+
+### Order
+
+#### Main fields
+
+| Field             | Rules                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| `buyer`           | Required. ObjectId → `User`.                                                               |
+| `seller`          | Required. ObjectId → `User`. Resolved from the product at order time.                      |
+| `product`         | Required. ObjectId → `Product`.                                                            |
+| `size`            | Required. Number. Must correspond to a size in the product's `sizeVariants`.               |
+| `quantity`        | Required. Number. Min 1, max 20.                                                           |
+| `unitPrice`       | Required. Number. Min 0. Snapshotted from the product at order time.                       |
+| `totalPrice`      | Required. Number. Min 0. Equals `quantity × unitPrice`.                                    |
+| `shippingAddress` | Required. Embedded object (see below). Snapshotted from the buyer's profile at order time. |
+| `status`          | Enum (see Order Status Reference). Default: `"pending"`.                                   |
+| `statusHistory`   | Array of status change entries (see below).                                                |
+| `cancelReason`    | Optional. String. Max 500 chars. Trimmed.                                                  |
+| `cancelledBy`     | Optional. Enum: `"buyer"`, `"seller"`, `"admin"`.                                          |
+
+#### `shippingAddress` (embedded, snapshotted at order time)
+
+| Field     | Rules                      |
+| --------- | -------------------------- |
+| `street`  | Required. String. Trimmed. |
+| `city`    | Required. String. Trimmed. |
+| `state`   | Optional. String. Trimmed. |
+| `zipCode` | Required. String. Trimmed. |
+| `country` | Required. String. Trimmed. |
+
+#### `statusHistory` item
+
+| Field       | Rules                                        |
+| ----------- | -------------------------------------------- |
+| `status`    | Required. Enum: same as order status values. |
+| `changedBy` | Optional. ObjectId → `User`.                 |
+| `changedAt` | Date. Default: current timestamp.            |
+| `note`      | Optional. String. Max 300 chars. Trimmed.    |
+
+---
+
+### Review
+
+| Field      | Rules                                                           |
+| ---------- | --------------------------------------------------------------- |
+| `product`  | Required. ObjectId → `Product`.                                 |
+| `buyer`    | Required. ObjectId → `User`.                                    |
+| `rating`   | Required. Integer. Min 1, max 5. Must be a whole number.        |
+| `comment`  | Optional. String. Max 1000 chars. Trimmed.                      |
+| `isEdited` | Boolean. Default: `false`. Set to `true` automatically on edit. |
+
+**Unique constraint:** One review per `(product, buyer)` pair. Attempting a second review returns `409`.
+
+---
+
+### Image
+
+| Field      | Rules                                                  |
+| ---------- | ------------------------------------------------------ |
+| `fileName` | Required. String. Original filename.                   |
+| `mimeType` | Required. String. e.g. `"image/jpeg"`, `"image/webp"`. |
+| `data`     | Required. Buffer. Raw binary image data.               |
+
+Images are stored directly in MongoDB. Retrieve via `GET /api/v1/image/:imageId`.
