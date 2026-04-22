@@ -65,6 +65,7 @@ export default function ChatWindow({
                   style={{ animationDelay: "300ms" }}
                 />
               </span>
+              <p className="text-xs text-gray-400 mt-1.5">ShoeBot is thinking...</p>
             </div>
           </div>
         )}

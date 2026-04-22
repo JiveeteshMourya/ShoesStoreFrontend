@@ -41,7 +41,7 @@ export const useChatbot = () => {
         const { data } = await axios.post(
           `${API_BASE}/chatbot/message`,
           { message: trimmed, sessionId: sessionId.current },
-          { withCredentials: true }
+          { withCredentials: true, timeout: 60000 }
         );
 
         if (data.success) {
