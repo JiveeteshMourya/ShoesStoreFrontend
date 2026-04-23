@@ -10,9 +10,12 @@ export default function ChatWidget() {
     isOpen,
     setIsOpen,
     isListening,
+    isSpeaking,
+    voiceOutputEnabled,
     sendMessage,
     clearSession,
     toggleVoice,
+    toggleVoiceOutput,
   } = useChatbot();
 
   return (
@@ -24,8 +27,11 @@ export default function ChatWidget() {
           setInput={setInput}
           loading={loading}
           isListening={isListening}
+          isSpeaking={isSpeaking}
+          voiceOutputEnabled={voiceOutputEnabled}
           onSend={sendMessage}
           onVoiceToggle={toggleVoice}
+          onVoiceOutputToggle={toggleVoiceOutput}
           onClear={clearSession}
           onClose={() => setIsOpen(false)}
         />

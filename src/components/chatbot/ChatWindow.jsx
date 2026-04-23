@@ -8,8 +8,11 @@ export default function ChatWindow({
   setInput,
   loading,
   isListening,
+  isSpeaking,
+  voiceOutputEnabled,
   onSend,
   onVoiceToggle,
+  onVoiceOutputToggle,
   onClear,
   onClose,
 }) {
@@ -20,13 +23,16 @@ export default function ChatWindow({
   }, [messages, loading]);
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl shadow-2xl w-[360px] h-[520px] overflow-hidden">
+    <div className="flex flex-col bg-white rounded-2xl shadow-2xl w-[380px] h-[560px] overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 bg-black text-white">
         <div className="flex items-center gap-2">
           <span className="text-xl">👟</span>
           <div>
-            <p className="text-sm font-semibold leading-none">ShoeBot</p>
-            <p className="text-xs text-gray-400">ShoesStore Support</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-sm font-semibold leading-none">ShoeBot</p>
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            </div>
+            <p className="text-xs text-gray-400 mt-0.5">ShoesStore Support</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -43,7 +49,7 @@ export default function ChatWindow({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
+      <div className="flex-1 overflow-y-auto chat-scroll px-4 py-3 space-y-2">
         {messages.map((msg, i) => (
           <ChatMessage key={i} message={msg} />
         ))}
@@ -80,6 +86,9 @@ export default function ChatWindow({
         loading={loading}
         isListening={isListening}
         onVoiceToggle={onVoiceToggle}
+        isSpeaking={isSpeaking}
+        voiceOutputEnabled={voiceOutputEnabled}
+        onVoiceOutputToggle={onVoiceOutputToggle}
       />
     </div>
   );

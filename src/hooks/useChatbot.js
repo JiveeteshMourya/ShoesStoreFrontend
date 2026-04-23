@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import axios from "axios";
 
 const getSessionId = () => {
@@ -11,6 +11,24 @@ const getSessionId = () => {
 };
 
 const API_BASE = "http://localhost:6969/api/v1";
+
+const cleanForSpeech = text =>
+  text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`#~>]/g, "")
+    .replace(/\n+/g, ". ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+const getEnglishVoice = () => {
+  const voices = window.speechSynthesis?.getVoices() ?? [];
+  return (
+    voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("google")) ??
+    voices.find(v => v.lang.startsWith("en") && v.name.toLowerCase().includes("microsoft")) ??
+    voices.find(v => v.lang.startsWith("en")) ??
+    null
+  );
+};
 
 export const useChatbot = () => {
   const [messages, setMessages] = useState([
@@ -25,8 +43,66 @@ export const useChatbot = () => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceOutputEnabled, setVoiceOutputEnabled] = useState(
+    () => localStorage.getItem("shoebot_voice_output") === "true"
+  );
   const sessionId = useRef(getSessionId());
   const recognitionRef = useRef(null);
+
+  const stopSpeaking = useCallback(() => {
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
+  }, []);
+
+  const speak = useCallback(text => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(cleanForSpeech(text));
+    utterance.lang = "en-IN";
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    const voice = getEnglishVoice();
+    if (voice) {
+      utterance.voice = voice;
+    } else {
+      // voices list loads async in Chrome — retry once after voices are ready
+      window.speechSynthesis.onvoiceschanged = () => {
+        const v = getEnglishVoice();
+        if (v) utterance.voice = v;
+        window.speechSynthesis.onvoiceschanged = null;
+        window.speechSynthesis.speak(utterance);
+      };
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      return;
+    }
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  const toggleVoiceOutput = useCallback(() => {
+    setVoiceOutputEnabled(prev => {
+      const next = !prev;
+      localStorage.setItem("shoebot_voice_output", String(next));
+      if (!next) {
+        window.speechSynthesis?.cancel();
+        setIsSpeaking(false);
+      }
+      return next;
+    });
+  }, []);
+
+  // stop speech when chat window closes
+  useEffect(() => {
+    if (!isOpen) stopSpeaking();
+  }, [isOpen, stopSpeaking]);
 
   const sendMessage = useCallback(
     async text => {
@@ -53,8 +129,10 @@ export const useChatbot = () => {
               sentiment: data.data.sentiment,
               sources: data.data.sources,
               tool_used: data.data.tool_used,
+              suggested_products: data.data.suggested_products ?? null,
             },
           ]);
+          if (voiceOutputEnabled) speak(data.data.reply);
         }
       } catch {
         setMessages(prev => [
@@ -70,10 +148,11 @@ export const useChatbot = () => {
         setLoading(false);
       }
     },
-    [loading]
+    [loading, voiceOutputEnabled, speak]
   );
 
   const clearSession = useCallback(async () => {
+    stopSpeaking();
     await axios
       .post(
         `${API_BASE}/chatbot/clear-session`,
@@ -92,7 +171,7 @@ export const useChatbot = () => {
         sources: null,
       },
     ]);
-  }, []);
+  }, [stopSpeaking]);
 
   const toggleVoice = useCallback(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -106,6 +185,9 @@ export const useChatbot = () => {
       setIsListening(false);
       return;
     }
+
+    // stop any ongoing speech output before starting to listen
+    stopSpeaking();
 
     const recognition = new SpeechRecognition();
     recognition.lang = "en-IN";
@@ -122,7 +204,7 @@ export const useChatbot = () => {
     recognitionRef.current = recognition;
     recognition.start();
     setIsListening(true);
-  }, [isListening, sendMessage]);
+  }, [isListening, sendMessage, stopSpeaking]);
 
   return {
     messages,
@@ -132,8 +214,12 @@ export const useChatbot = () => {
     isOpen,
     setIsOpen,
     isListening,
+    isSpeaking,
+    voiceOutputEnabled,
     sendMessage,
     clearSession,
     toggleVoice,
+    toggleVoiceOutput,
+    stopSpeaking,
   };
 };

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 
-const supportsVoice = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+const supportsVoiceInput = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+const supportsVoiceOutput = !!window.speechSynthesis;
 
 export default function ChatInput({
   input,
@@ -9,6 +10,9 @@ export default function ChatInput({
   loading,
   isListening,
   onVoiceToggle,
+  isSpeaking,
+  voiceOutputEnabled,
+  onVoiceOutputToggle,
 }) {
   const textareaRef = useRef(null);
 
@@ -29,12 +33,12 @@ export default function ChatInput({
         onKeyDown={handleKeyDown}
         placeholder="Ask ShoeBot anything..."
         disabled={loading}
-        className="flex-1 resize-none rounded-xl border border-gray-200 px-3 py-2 text-sm
+        className="flex-1 resize-none rounded-xl border border-gray-300 bg-gray-50 px-3 py-2 text-sm
                    focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
                    disabled:opacity-50 max-h-24 overflow-y-auto"
       />
 
-      {supportsVoice && (
+      {supportsVoiceInput && (
         <button
           onClick={onVoiceToggle}
           title={isListening ? "Stop listening" : "Voice input"}
@@ -45,6 +49,26 @@ export default function ChatInput({
           }`}
         >
           🎤
+        </button>
+      )}
+
+      {supportsVoiceOutput && (
+        <button
+          onClick={onVoiceOutputToggle}
+          title={
+            voiceOutputEnabled
+              ? "Voice output on — click to turn off"
+              : "Voice output off — click to turn on"
+          }
+          className={`p-2 rounded-xl transition-colors ${
+            isSpeaking
+              ? "bg-green-500 text-white animate-pulse"
+              : voiceOutputEnabled
+                ? "bg-green-100 text-green-600 hover:bg-green-200"
+                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+          }`}
+        >
+          {voiceOutputEnabled ? "🔊" : "🔇"}
         </button>
       )}
 
