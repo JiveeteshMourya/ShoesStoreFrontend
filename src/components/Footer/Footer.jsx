@@ -2,22 +2,20 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--color-border)] bg-[var(--color-background)]">
+    <footer className="bg-[#111111]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <p className="text-lg font-semibold text-[var(--color-primary)]">
-              Sole <span className="text-[var(--color-accent)]">&</span> Co.
+            <p className="text-lg font-semibold text-white">
+              Sole <span className="text-(--color-accent)">&</span> Co.
             </p>
-            <p className="mt-2 text-sm text-[var(--color-secondary)] leading-relaxed">
+            <p className="mt-2 text-sm text-white/60 leading-relaxed">
               Curated footwear for every stride.
             </p>
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--color-secondary)]">
-              Shop
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Shop</p>
             <ul className="mt-3 space-y-2">
               {[
                 { label: "All Products", to: "/products" },
@@ -27,7 +25,7 @@ export default function Footer() {
                 <li key={l.to}>
                   <Link
                     to={l.to}
-                    className="text-sm text-[var(--color-secondary)] hover:text-[var(--color-primary)] transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors"
                   >
                     {l.label}
                   </Link>
@@ -37,9 +35,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--color-secondary)]">
-              Account
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Account</p>
             <ul className="mt-3 space-y-2">
               {[
                 { label: "Sign In", to: "/login" },
@@ -50,7 +46,7 @@ export default function Footer() {
                 <li key={l.to}>
                   <Link
                     to={l.to}
-                    className="text-sm text-[var(--color-secondary)] hover:text-[var(--color-primary)] transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors"
                   >
                     {l.label}
                   </Link>
@@ -60,9 +56,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--color-secondary)]">
-              Sell
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Sell</p>
             <ul className="mt-3 space-y-2">
               {[
                 { label: "Become a Seller", to: "/register" },
@@ -72,7 +66,7 @@ export default function Footer() {
                 <li key={l.to}>
                   <Link
                     to={l.to}
-                    className="text-sm text-[var(--color-secondary)] hover:text-[var(--color-primary)] transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors"
                   >
                     {l.label}
                   </Link>
@@ -82,7 +76,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-[var(--color-border)] pt-6 text-center text-xs text-[var(--color-secondary)]">
+        <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-white/30">
           © {new Date().getFullYear()} Sole &amp; Co. All rights reserved.
         </div>
       </div>

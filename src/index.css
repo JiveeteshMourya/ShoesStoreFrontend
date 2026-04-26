@@ -18,6 +18,12 @@
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
+
+  /* Elevation */
+  --color-surface-elevated: #ffffff;
+  --shadow-card: 0 2px 8px rgba(180, 160, 130, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 8px 24px rgba(180, 160, 130, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 *,
@@ -33,7 +39,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  line-height: 1.5;
+  line-height: 1.6;
   font-weight: 400;
 
   color: var(--color-text-main);
@@ -74,6 +80,12 @@ h5,
 h6,
 Button {
   font-family: "Montserrat", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-family: "Playfair Display", "Montserrat", system-ui, serif;
+  letter-spacing: -0.02em;
 }
 
 p,
@@ -92,6 +104,37 @@ section {
 }
 
 @media (prefers-color-scheme: light) {
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 ::selection {
