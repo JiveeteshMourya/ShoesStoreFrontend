@@ -36,8 +36,25 @@ function TickerStrip() {
   );
 }
 
+const CATEGORY_IMAGES = {
+  running:
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
+  casual:
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=800&q=80",
+  formal:
+    "https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&w=800&q=80",
+  sports:
+    "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80",
+  "running-shoes":
+    "https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=800&q=80",
+  sandals:
+    "https://images.unsplash.com/photo-1562183241-840b8af0721e?auto=format&fit=crop&w=800&q=80",
+  boots:
+    "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=800&q=80",
+};
+
 function CategoryCard({ category, featured = false }) {
-  const imageUrl = getImageUrl(category.image);
+  const imageUrl = getImageUrl(category.image) || CATEGORY_IMAGES[category.slug];
   return (
     <Link
       to={`/products?category=${category.slug}`}

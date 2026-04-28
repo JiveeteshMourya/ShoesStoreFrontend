@@ -67,78 +67,64 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Geometric visual composition */}
+          {/* Product showcase card */}
           <div
             className="relative hidden lg:block"
             style={{ animation: "fadeInUp 0.8s ease 0.15s both" }}
           >
-            <div className="relative aspect-square w-full max-w-lg mx-auto">
-              {/* Base card */}
-              <div className="absolute inset-0 rounded-lg bg-(--color-surface)" />
-
-              {/* Large rotated accent rectangle */}
+            <div className="relative mx-auto max-w-md">
+              {/* Main card */}
               <div
-                className="absolute right-6 top-6 h-3/4 w-[55%] rounded-2xl bg-(--color-accent)/15"
-                style={{ transform: "rotate(8deg)" }}
-              />
-
-              {/* Second accent shape */}
-              <div
-                className="absolute right-16 bottom-10 h-1/3 w-1/3 rounded-xl bg-(--color-accent)/25"
-                style={{ transform: "rotate(-4deg)" }}
-              />
-
-              {/* Warm radial gradient overlay */}
-              <div
-                className="absolute inset-0 rounded-lg opacity-50"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at 70% 30%, var(--color-accent) 0%, transparent 55%)",
-                }}
-              />
-
-              {/* Dark editorial panel */}
-              <div className="absolute bottom-10 left-8 h-[42%] w-[44%] rounded-2xl bg-(--color-primary)" />
-
-              {/* Decorative accent rules */}
-              <div className="absolute bottom-32 right-12 h-px w-20 bg-(--color-accent)/70" />
-              <div className="absolute bottom-36 right-12 h-px w-12 bg-(--color-accent)/40" />
-
-              {/* Editorial text */}
-              <div className="absolute bottom-18 left-14 text-left">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-(--color-accent)">
-                  Premium
-                </p>
-                <p className="mt-1 text-xl font-bold leading-tight text-white">Footwear</p>
-                <p className="mt-1 text-[11px] text-white/50 tracking-wide">Est. 2024</p>
-              </div>
-
-              {/* Floating stat — bottom left */}
-              <div
-                className="absolute -bottom-5 -left-5 rounded-md border border-(--color-border) bg-white px-5 py-3"
-                style={{ boxShadow: "var(--shadow-hover)" }}
+                className="relative overflow-hidden rounded-3xl"
+                style={{ aspectRatio: "3/4", boxShadow: "0 32px 64px -12px rgba(0,0,0,0.3)" }}
               >
-                <p className="text-2xl font-bold text-(--color-primary)">2k+</p>
-                <p className="text-xs text-(--color-secondary)">Products listed</p>
+                <img
+                  src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80"
+                  alt="Featured shoe"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                {/* Bottom gradient */}
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent" />
+
+                {/* New Drop badge */}
+                <div className="absolute top-5 left-5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-(--color-accent) px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white">
+                    ✦ New Drop
+                  </span>
+                </div>
+
+                {/* Bottom info overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50 mb-1">
+                    Featured Collection
+                  </p>
+                  <p className="text-2xl font-bold text-white leading-tight">Premium Sneakers</p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-yellow-400 text-sm">★★★★★</span>
+                      <span className="text-white/60 text-xs">4.8 · 2,000+ sold</span>
+                    </div>
+                    <span className="text-sm font-semibold text-white">From ₹999</span>
+                  </div>
+                </div>
               </div>
 
               {/* Floating stat — top right */}
               <div
-                className="absolute -right-5 top-10 rounded-md border border-(--color-border) bg-white px-5 py-3"
+                className="absolute -right-6 top-8 rounded-2xl border border-(--color-border) bg-white/90 backdrop-blur-sm px-4 py-3"
                 style={{ boxShadow: "var(--shadow-hover)" }}
               >
-                <p className="text-2xl font-bold text-(--color-primary)">4.8★</p>
-                <p className="text-xs text-(--color-secondary)">Avg. rating</p>
+                <p className="text-xl font-bold text-(--color-primary)">4.8★</p>
+                <p className="text-[11px] text-(--color-secondary)">Avg. rating</p>
               </div>
 
-              {/* Floating tag — mid left */}
+              {/* Floating stat — mid left */}
               <div
-                className="absolute -left-5 top-[38%] rounded-full border border-(--color-accent)/30 bg-white px-4 py-2"
-                style={{ boxShadow: "var(--shadow-card)" }}
+                className="absolute -left-6 top-1/2 -translate-y-1/2 rounded-2xl border border-(--color-border) bg-white/90 backdrop-blur-sm px-4 py-3"
+                style={{ boxShadow: "var(--shadow-hover)" }}
               >
-                <p className="text-xs font-semibold text-(--color-accent) tracking-wide">
-                  New Season
-                </p>
+                <p className="text-xl font-bold text-(--color-primary)">2k+</p>
+                <p className="text-[11px] text-(--color-secondary)">Products listed</p>
               </div>
             </div>
           </div>
