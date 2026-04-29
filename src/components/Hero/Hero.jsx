@@ -21,7 +21,7 @@ export default function Hero() {
             <div className="inline-flex items-center gap-2 rounded-full border border-(--color-accent)/40 bg-(--color-accent)/10 px-4 py-1.5 mb-4">
               <span className="h-1.5 w-1.5 rounded-full bg-(--color-accent)" />
               <span className="text-xs font-semibold uppercase tracking-widest text-(--color-accent)">
-                New Season 2024
+                New Season 2026
               </span>
             </div>
             <h1 className="mt-2 text-6xl font-bold leading-[1.05] text-(--color-primary) sm:text-7xl lg:text-8xl">
